@@ -17,17 +17,21 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+Major streaming platforms like Spotify and YouTube use hybrid recommendation systems that combine "Collaborative Filtering" (analyzing what similar users enjoy) with "Content-Based Filtering" (analyzing the specific attributes of a song).
 
-Some prompts to answer:
+This simulation employs a **Content-Based Filtering** approach. The system prioritizes "Sonic Alignment"—the mathematical similarity between a user's stated preferences and the available catalog.
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+### The Algorithm Recipe
+The system follows a three-step process to generate recommendations:
 
-You can include a simple diagram or bullet list if helpful.
+1.  **Feature Mapping:** Each `Song` is defined by metadata (Genre, Mood) and acoustic attributes (Energy, Valence, Tempo).
+2.  **The Scoring Rule (Proximity):** The system calculates a score for each song based on its distance from the `UserProfile`. Instead of rewarding high values, the rule rewards **alignment**. For example, if a profile specifies a preference for 0.4 energy, a song with 0.41 energy receives a near-perfect score, while a high-energy track (0.9) receives a low score.
+3.  **The Ranking Rule (Selection):** After every song is scored, the system sorts the results from highest to lowest. This version prioritizes **Precision**—selecting the absolute closest matches—rather than prioritizing diversity or novelty.
+
+### Data Inputs
+- **Song Features:** Metadata (Genre, Mood) and normalized acoustic data (Energy, Valence, Danceability).
+- **User Profile:** A collection of target values representing ideal musical preferences.
+- **Weights:** A configuration that determines the relative importance of each feature (e.g., weighing Genre more heavily than Tempo).
 
 ---
 
