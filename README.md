@@ -22,16 +22,25 @@ Major streaming platforms like Spotify and YouTube use hybrid recommendation sys
 This simulation employs a **Content-Based Filtering** approach. The system prioritizes "Sonic Alignment"—the mathematical similarity between a user's stated preferences and the available catalog.
 
 ### The Algorithm Recipe
-The system follows a three-step process to generate recommendations:
+The system calculates a "Relevance Score" (Max 8.5 pts) for every song in the catalog using a weighted point system:
 
-1.  **Feature Mapping:** Each `Song` is defined by metadata (Genre, Mood) and acoustic attributes (Energy, Valence, Tempo).
-2.  **The Scoring Rule (Proximity):** The system calculates a score for each song based on its distance from the `UserProfile`. Instead of rewarding high values, the rule rewards **alignment**. For example, if a profile specifies a preference for 0.4 energy, a song with 0.41 energy receives a near-perfect score, while a high-energy track (0.9) receives a low score.
-3.  **The Ranking Rule (Selection):** After every song is scored, the system sorts the results from highest to lowest. This version prioritizes **Precision**—selecting the absolute closest matches—rather than prioritizing diversity or novelty.
+| Feature | Weight (Max Points) | Scoring Logic |
+| :--- | :--- | :--- |
+| **Genre Match** | **+2.0 pts** | Exact match with user's favorite genres. |
+| **Energy Similarity** | **+2.0 pts** | Reward songs closer to target energy (0.0-1.0). |
+| **Mood Match** | **+1.5 pts** | Exact match with user's favorite moods. |
+| **Acousticness** | **+1.5 pts** | Reward songs closer to target acousticness level. |
+| **Valence** | **+1.0 pts** | Reward songs matching user's target positivity level. |
+| **Tempo (BPM)** | **+0.5 pts** | Reward songs closer to target beats per minute. |
+
+**Expected Biases:**
+- **Genre Over-Prioritization:** Because a Genre match is weighted as highly as Energy, the system might ignore a perfect "chill lofi" track that exactly matches the user's energy and mood targets simply because the user didn't explicitly list "Lofi" in their favorite genres.
+- **Precision Bias:** The system focuses on the closest mathematical matches, which can lead to a "filter bubble" where the recommendations lack diversity or surprise.
 
 ### Data Inputs
 - **Song Features:** Metadata (Genre, Mood) and normalized acoustic data (Energy, Valence, Danceability).
 - **User Profile:** A collection of target values representing ideal musical preferences.
-- **Weights:** A configuration that determines the relative importance of each feature (e.g., weighing Genre more heavily than Tempo).
+- **Weights:** A configuration that determines the relative importance of each feature.
 
 ---
 
