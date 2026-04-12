@@ -2,110 +2,52 @@
 
 ## 1. Model Name  
 
-Give your model a short, descriptive name.  
-Example: **VibeFinder 1.0**  
+**VibeEngine 1.0 (Experimental Energy-First Edition)**
 
 ---
 
 ## 2. Intended Use  
 
-Describe what your recommender is designed to do and who it is for. 
-
-Prompts:  
-
-- What kind of recommendations does it generate  
-- What assumptions does it make about the user  
-- Is this for real users or classroom exploration  
+This model is a classroom exploration tool designed to simulate a Content-Based Filtering music recommender. It suggests 5 songs from a small 20-song catalog by mathematically calculating the "distance" between a user's stated preferences (Genre, Mood, Energy, etc.) and a track's metadata. It is intended for educational purposes only and not for real-world commercial use.
 
 ---
 
 ## 3. How the Model Works  
 
-Explain your scoring approach in simple language.  
-
-Prompts:  
-
-- What features of each song are used (genre, energy, mood, etc.)  
-- What user preferences are considered  
-- How does the model turn those into a score  
-- What changes did you make from the starter logic  
-
-Avoid code here. Pretend you are explaining the idea to a friend who does not program.
+The recommender uses a "weighted point system" to rank songs. For every song in the catalog, it checks if the Genre and Mood match the user's favorites (+1.0 and +1.5 pts respectively). It then calculates how close the song's energy, acousticness, and positivity (valence) are to the user's targets, awarding up to 4.0 points for energy and 1.5 points for acousticness. Finally, it adds a small bonus for matching tempo. All these points are summed into a "Relevance Score" out of 8.5, and the top 5 highest-scoring songs are recommended.
 
 ---
 
 ## 4. Data  
 
-Describe the dataset the model uses.  
-
-Prompts:  
-
-- How many songs are in the catalog  
-- What genres or moods are represented  
-- Did you add or remove data  
-- Are there parts of musical taste missing in the dataset  
+The dataset consists of 20 songs in a CSV format (`data/songs.csv`). It covers a variety of genres like pop, lofi, rock, ambient, and metal. Each song is tagged with human-labeled metadata (Mood, Genre) and technical audio features (Energy, Tempo, Valence, Acousticness). While diverse for its size, the catalog is extremely limited and does not represent complex sub-genres or non-English language tracks.
 
 ---
 
 ## 5. Strengths  
 
-Where does your system seem to work well  
-
-Prompts:  
-
-- User types for which it gives reasonable results  
-- Any patterns you think your scoring captures correctly  
-- Cases where the recommendations matched your intuition  
+The system is highly effective at finding "ideal" matches when a user's categorical preferences (like Genre) align with their technical ones (like Energy). It excels at identifying clear-cut vibes like "Chill Lofi" or "High-Energy Pop" because the scoring system prioritizes the strongest common denominators between multiple musical features.
 
 ---
 
 ## 6. Limitations and Bias 
 
-Where the system struggles or behaves unfairly. 
-
-Prompts:  
-
-- Features it does not consider  
-- Genres or moods that are underrepresented  
-- Cases where the system overfits to one preference  
-- Ways the scoring might unintentionally favor some users  
+One major weakness is the "Categorical Bias" discovered during stress testing. Because Genre and Mood matches are fixed point bonuses, they can sometimes "drown out" a user's actual target for how the music should sound. For example, in the original configuration, a user who specifically asked for high-energy music was recommended a very slow, quiet track simply because the track's genre label matched their favorite list. This suggests that the system may over-prioritize human-labeled categories over the actual technical characteristics of the audio, potentially creating a "filter bubble" where users only see music labeled with their favorite genre, even if it doesn't match the energy level they requested.
 
 ---
 
 ## 7. Evaluation  
 
-How you checked whether the recommender behaved as expected. 
-
-Prompts:  
-
-- Which user profiles you tested  
-- What you looked for in the recommendations  
-- What surprised you  
-- Any simple tests or comparisons you ran  
-
-No need for numeric metrics unless you created some.
+The model was evaluated using four distinct user profiles: High-Energy Pop, Chill Lofi, Deep Intense Rock, and an "Adversarial" profile with conflicting preferences. I specifically looked for cases where the top recommendation didn't "feel" right. This led to a "Weight Shift" experiment where the energy importance was doubled and the genre importance was halved, which successfully fixed a major bias where slow music was being recommended to high-energy seekers.
 
 ---
 
 ## 8. Future Work  
 
-Ideas for how you would improve the model next.  
-
-Prompts:  
-
-- Additional features or preferences  
-- Better ways to explain recommendations  
-- Improving diversity among the top results  
-- Handling more complex user tastes  
+If I had more time, I would introduce a "Diversity Multiplier" to ensure that the top 5 results aren't all from the same genre. I would also move away from "Exact Match" logic for genres and use a "Genre Similarity Matrix" so that the system knows "Rock" and "Metal" are related, even if the user didn't explicitly list both.
 
 ---
 
 ## 9. Personal Reflection  
 
-A few sentences about your experience.  
-
-Prompts:  
-
-- What you learned about recommender systems  
-- Something unexpected or interesting you discovered  
-- How this changed the way you think about music recommendation apps  
+Building this simulation showed me how "simple" math like subtraction and addition can drive the multi-billion dollar algorithms we use daily. I was surprised by how much a single number (like the +2.0 weight on Genre) could completely change the user experience. It made me realize that even if an AI seems objective, its "personality" is really just a set of weights chosen by a human engineer, which can easily introduce unintended biases into what we hear and see online.

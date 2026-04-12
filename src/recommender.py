@@ -72,19 +72,19 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     score = 0.0
     reasons = []
 
-    # 1. Genre Match (+2.0)
+    # 1. Genre Match (+1.0) - EXPERIMENT: Halved from 2.0
     fav_genres = user_prefs.get('favorite_genres', [])
     if not isinstance(fav_genres, list): fav_genres = [fav_genres]
     if 'genre' in user_prefs: fav_genres.append(user_prefs['genre'])
     
     if song['genre'] in fav_genres:
-        score += 2.0
-        reasons.append("genre match (+2.0)")
+        score += 1.0
+        reasons.append("genre match (+1.0)")
 
-    # 2. Energy Similarity (+2.0)
+    # 2. Energy Similarity (+4.0) - EXPERIMENT: Doubled from 2.0
     target_energy = user_prefs.get('target_energy', user_prefs.get('energy'))
     if target_energy is not None:
-        energy_score = 2.0 * (1.0 - abs(song['energy'] - target_energy))
+        energy_score = 4.0 * (1.0 - abs(song['energy'] - target_energy))
         score += energy_score
         reasons.append(f"energy alignment (+{energy_score:.2f})")
 

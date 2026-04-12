@@ -83,11 +83,35 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Experiments You Tried
 
-Use this section to document the experiments you ran. For example:
+In this phase, I stress-tested the recommender with four distinct user profiles to evaluate how the scoring logic handles different musical tastes and edge cases.
 
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+### 1. High-Energy Pop
+*   **Target:** Pop genre, Happy mood, 0.9 Energy.
+*   **Result:** Successfully recommended **"Sunrise City" (6.30/8.5)** and **"Gym Hero" (4.91/8.5)**.
+*   **Observation:** The system effectively combined genre and energy alignment for these "ideal" matches.
+
+![High-Energy Pop Recommendations](Cursor_En0zx6YZVm.png)
+
+### 2. Chill Lofi
+*   **Target:** Lofi genre, Chill mood, 0.3 Energy, 0.8 Acousticness.
+*   **Result:** Top pick was **"Library Rain" (6.81/8.5)**.
+*   **Observation:** This profile achieved the highest overall scores, as the catalog has several tracks that perfectly match the "lofi-chill" archetype.
+
+![Chill Lofi Recommendations](Cursor_8Hmy3T7GtR.png)
+
+### 3. Deep Intense Rock
+*   **Target:** Rock/Metal, Intense/Aggressive, 0.9 Energy, 160 BPM.
+*   **Result:** **"Storm Runner" (5.94/8.5)** and **"Eternal Requiem" (5.78/8.5)**.
+*   **Observation:** The system successfully prioritized BPM and energy alongside genre.
+
+![Deep Intense Rock Recommendations](Cursor_Al2KYNF5JH.png)
+
+### 4. Conflicting Preferences (Adversarial)
+*   **Target:** Ambient genre, Melancholic mood, but with a high **0.9 Energy** target.
+*   **Result:** **"Rainy Window" (4.14/8.5)**.
+*   **Observation:** **The Glitch Found:** Even though the user wanted 0.9 energy, the system recommended a track with 0.22 energy because the **Genre Match (+2.0)** and **Mood Match (+1.5)** points outweighed the energy penalty. This reveals a bias where categorical data (Genre/Mood) can "drown out" the physical characteristics (Energy) of the music.
+
+![Conflicting Preferences Recommendations](Cursor_sZiHhwIqTh.png)
 
 ---
 
