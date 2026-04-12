@@ -42,6 +42,8 @@ The system calculates a "Relevance Score" (Max 8.5 pts) for every song in the ca
 - **User Profile:** A collection of target values representing ideal musical preferences.
 - **Weights:** A configuration that determines the relative importance of each feature.
 
+![Recommendation Output](image.png)
+
 ---
 
 ## Getting Started
