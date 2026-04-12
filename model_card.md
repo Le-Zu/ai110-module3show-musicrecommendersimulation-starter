@@ -1,53 +1,63 @@
 # 🎧 Model Card: Music Recommender Simulation
 
 ## 1. Model Name  
-
 **VibeEngine 1.0 (Experimental Energy-First Edition)**
 
 ---
 
-## 2. Intended Use  
-
-This model is a classroom exploration tool designed to simulate a Content-Based Filtering music recommender. It suggests 5 songs from a small 20-song catalog by mathematically calculating the "distance" between a user's stated preferences (Genre, Mood, Energy, etc.) and a track's metadata. It is intended for educational purposes only and not for real-world commercial use.
-
----
-
-## 3. How the Model Works  
-
-The recommender uses a "weighted point system" to rank songs. For every song in the catalog, it checks if the Genre and Mood match the user's favorites (+1.0 and +1.5 pts respectively). It then calculates how close the song's energy, acousticness, and positivity (valence) are to the user's targets, awarding up to 4.0 points for energy and 1.5 points for acousticness. Finally, it adds a small bonus for matching tempo. All these points are summed into a "Relevance Score" out of 8.5, and the top 5 highest-scoring songs are recommended.
+## 2. Goal / Task
+The goal of this recommender is to suggest the top 5 most relevant songs from a small catalog based on a user's stated musical preferences. It tries to predict "relevance" by calculating the mathematical similarity between a user's taste profile and a song's attributes.
 
 ---
 
-## 4. Data  
-
-The dataset consists of 20 songs in a CSV format (`data/songs.csv`). It covers a variety of genres like pop, lofi, rock, ambient, and metal. Each song is tagged with human-labeled metadata (Mood, Genre) and technical audio features (Energy, Tempo, Valence, Acousticness). While diverse for its size, the catalog is extremely limited and does not represent complex sub-genres or non-English language tracks.
-
----
-
-## 5. Strengths  
-
-The system is highly effective at finding "ideal" matches when a user's categorical preferences (like Genre) align with their technical ones (like Energy). It excels at identifying clear-cut vibes like "Chill Lofi" or "High-Energy Pop" because the scoring system prioritizes the strongest common denominators between multiple musical features.
+## 3. Data Used
+- **Dataset:** `data/songs.csv` containing 20 tracks.
+- **Features:** Includes human-labeled categories (Genre, Mood) and technical audio metrics (Energy, Tempo BPM, Valence/Positivity, Acousticness).
+- **Limitations:** The small catalog size limits variety, and the "Mood" and "Genre" labels are subjective and fixed.
 
 ---
 
-## 6. Limitations and Bias 
-
-One major weakness is the "Categorical Bias" discovered during stress testing. Because Genre and Mood matches are fixed point bonuses, they can sometimes "drown out" a user's actual target for how the music should sound. For example, in the original configuration, a user who specifically asked for high-energy music was recommended a very slow, quiet track simply because the track's genre label matched their favorite list. This suggests that the system may over-prioritize human-labeled categories over the actual technical characteristics of the audio, potentially creating a "filter bubble" where users only see music labeled with their favorite genre, even if it doesn't match the energy level they requested.
-
----
-
-## 7. Evaluation  
-
-The model was evaluated using four distinct user profiles: High-Energy Pop, Chill Lofi, Deep Intense Rock, and an "Adversarial" profile with conflicting preferences. I specifically looked for cases where the top recommendation didn't "feel" right. This led to a "Weight Shift" experiment where the energy importance was doubled and the genre importance was halved, which successfully fixed a major bias where slow music was being recommended to high-energy seekers.
+## 4. Algorithm Summary
+The system uses a "weighted point system." It awards points if a song matches your favorite genre or mood. It then gives higher scores to songs that are "closer" to your target energy, acousticness, and positivity levels. These points are added up into a final score, and the songs with the highest totals are recommended first.
 
 ---
 
-## 8. Future Work  
-
-If I had more time, I would introduce a "Diversity Multiplier" to ensure that the top 5 results aren't all from the same genre. I would also move away from "Exact Match" logic for genres and use a "Genre Similarity Matrix" so that the system knows "Rock" and "Metal" are related, even if the user didn't explicitly list both.
+## 5. Observed Behavior / Biases
+- **Categorical Bias:** Originally, the system favored matching a "Genre" label so much that it would recommend slow songs to people who asked for high energy.
+- **"Gym Hero" Effect:** Because some songs have very high values across multiple popular features (high energy + high danceability), they tend to appear as "safe bets" for many different types of users, even if they aren't a perfect match.
 
 ---
 
-## 9. Personal Reflection  
+## 6. Evaluation Process
+- **Profile Testing:** I tested the system with "High-Energy Pop," "Chill Lofi," "Deep Intense Rock," and an "Adversarial" profile with conflicting tastes.
+- **Weight Experiment:** I halved the importance of Genre and doubled the importance of Energy to see if the system could become more sensitive to the actual sound of the music rather than just its labels.
+- **Comparison:** I compared the results before and after the weight shift to verify if the "Adversarial" profile's results improved.
 
-Building this simulation showed me how "simple" math like subtraction and addition can drive the multi-billion dollar algorithms we use daily. I was surprised by how much a single number (like the +2.0 weight on Genre) could completely change the user experience. It made me realize that even if an AI seems objective, its "personality" is really just a set of weights chosen by a human engineer, which can easily introduce unintended biases into what we hear and see online.
+---
+
+## 7. Intended Use and Non-Intended Use
+- **Intended Use:** This system is for **educational exploration** and learning how recommendation algorithms work in a classroom setting.
+- **Non-Intended Use:** This should **not** be used for real music streaming services, as it lacks a large enough catalog and does not account for user listening history or complex musical relationships.
+
+---
+
+## 8. Ideas for Improvement
+1. **Diversity Multiplier:** Add a rule that prevents the top 5 from being all the same genre, forcing the system to show more variety.
+2. **Genre Similarity:** Create a map so the system knows that "Rock" and "Metal" are similar, even if the user didn't list both.
+3. **Negative Preferences:** Allow users to list "genres I hate" to subtract points from certain songs.
+
+---
+
+## 9. Personal Reflection
+
+**Biggest Learning Moment:**
+My biggest learning moment was discovering the "Adversarial Glitch." I realized that a single number—the "weight" of a genre—could completely silence a user's other preferences. Seeing a slow, sad song get recommended to someone asking for high-energy music just because of a label showed me how "human bias" in engineering can lead to poor AI results.
+
+**Using AI Tools:**
+AI tools helped me quickly generate multiple test profiles and analyze large blocks of terminal output. However, I had to double-check the math constantly. For example, when I doubled the energy weight, I had to verify that the final scores didn't exceed the "max score" in a way that would make the "Why" explanations confusing.
+
+**Simple Algorithms vs. Recommendations:**
+I was surprised by how a simple math formula (subtraction and addition) could create a result that "felt" like a real recommendation. It showed me that many complex systems we use every day are likely just much larger versions of this same basic logic.
+
+**Next Steps:**
+If I extended this project, I would try to add "Collaborative Filtering," where the system looks at what *other* users liked to make even better guesses, rather than just looking at the song's features.
